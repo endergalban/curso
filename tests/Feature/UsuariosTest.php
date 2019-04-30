@@ -90,4 +90,22 @@ class UsuariosTest extends TestCase
         // ]);
     }
 
+    /**
+    * @test
+    */
+    function requerir_usuario_name()
+    {
+        $this->from(route('users.create'))->post('users', [
+            'name' => '',
+            'email' => 'endergalban@gmail.com',
+            'password' => '123456',
+        ])->assertRedirect(route('users.create'))
+            ->assertSessionHasErrors(['name']);
+
+        $this->assertDatabaseMissing('users', [
+            'email' => 'endergalban@gmail.com',
+        ]);
+
+    }
+
 }
