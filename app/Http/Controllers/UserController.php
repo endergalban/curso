@@ -27,7 +27,9 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|confirmed',
         ]);
 
         User::create([
@@ -35,6 +37,32 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
+
+        return redirect()->route('users.index');
+    }
+
+    public function edit(User $user)
+    {
+      return view('users.edit', compact('user'));
+    }
+
+    public function update(User $user)
+    {
+      request()->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            // 'password' => 'required|confirmed',
+        ]);
+        $user->fill(request()->all());
+        $user->save();
+        // $user->password =bcrypt($request->password);
+
+        return redirect()->route('users.show', $user);
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
 
         return redirect()->route('users.index');
     }

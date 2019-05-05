@@ -5,8 +5,8 @@
     <div class="col s12">
       <h4>{{ $title }}</h4>
     </div>
-    <div class="col s12">
-      <a class="waves-effect waves-light btn" href="{{ route('users.create')}}"><i class="material-icons left">add</i>Nuevo usuario</a>
+    <div class="col s2 offset-s10">
+      <a class="waves-effect waves-light btn" href="{{ route('users.create')}}"><i class="material-icons left">add</i>Nuevo Usuario</a>
     </div>
     <div class="col s12">
       <table class="responsive-table striped highlight">
@@ -25,9 +25,13 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->profession ? $user->profession->title : '' }}</td>
                 <td nowrap>
+                  <form action="{{route('users.destroy', $user)}}" method="post">
                   <a class="waves-effect waves-light btn" href="{{ route('users.show',[$user->id]) }}"><i class="material-icons">search</i></a>
-                  <a class="waves-effect waves-light btn"><i class="material-icons">edit</i></a>
-                  <a class="waves-effect waves-light btn"><i class="material-icons">delete</i></a>
+                  <a class="waves-effect waves-light btn" href="{{ route('users.edit',[$user->id]) }}"><i class="material-icons">edit</i></a>
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button class="waves-effect waves-light btn"><i class="material-icons">delete</i></button>
+                  </form>
                 </td>
               </tr>
         @empty

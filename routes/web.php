@@ -23,3 +23,6 @@ Route::get('users', 'UserController@index')->name('users.index');
 Route::get('users/create', 'UserController@create')->name('users.create');
 Route::post('users', 'UserController@store')->name('users.store');
 Route::get('users/{user}', 'UserController@show')->where('user', '[0-9]+')->name('users.show');
+Route::get('users/{user}/edit', 'UserController@edit')->where('user', '[0-9]+')->name('users.edit');
+Route::put('users/{user}', 'UserController@update')->where('user', '[0-9]+')->name('users.update');
+Route::delete('users/{user}', 'UserController@destroy')->where('user', '[0-9]+')->name('users.destroy');
