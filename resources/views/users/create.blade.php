@@ -49,6 +49,26 @@
     </div>
     <div class="row">
       <div class="input-field col s12">
+        <i class="material-icons prefix">account_circle</i>
+        <input id="twitter" type="text" name="twitter"  value="{{ old('twitter') }}">
+        <label for="twitter">Twitter</label>
+        @if ($errors->has('twitter'))
+        <span class="helper-text" >{{ $errors->first('twitter') }}</span>
+        @endif
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">account_circle</i>
+        <textarea id="bio" type="text" name="bio" value="{{ old('bio') }}"></textarea>
+        <label for="name">Bio</label>
+        @if ($errors->has('bio'))
+        <span class="helper-text" >{{ $errors->first('bio') }}</span>
+        @endif
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
         <a class="waves-effect waves-light btn blue-grey lighten-5  black-text" href="{{ route('users.index')}}">Volver</a>
         <button class="waves-effect waves-light btn">Registrar</button>
       </div>

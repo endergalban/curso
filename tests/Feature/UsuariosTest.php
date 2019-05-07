@@ -55,26 +55,44 @@ class UsuariosTest extends TestCase
   /** @test **/
   function guardar_usuario()
   {
-    $this->post('users', [
-      'name' => 'Ender Galban',
-      'email' => 'endergalban@gmail.com',
-      'password' => '123456',
-      'password_confirmation' => '123456',
-    ])->assertRedirect(route('users.index'));
+    $this->withoutExceptionHandling();
+    $this->post('users', $this->getValidData())
+      ->assertRedirect(route('users.index'));
+
     $this->assertDatabaseHas('users', [
       'name' => 'Ender Galban',
       'email' => 'endergalban@gmail.com',
+    ]);
+    $this->assertDatabaseHas('user_profiles', [
+      'bio' => 'Programador Laravel',
+      'twitter' => 'https:twitter.com/endergalban',
+      'user_id' => User::first()->id,
+    ]);
+  }
+  /** @test **/
+  function guardar_usuario_sin_twitter()
+  {
+    $this->withoutExceptionHandling();
+    $this->post('users', $this->getValidData([
+      'twitter' => ''
+    ]))->assertRedirect(route('users.index'));
+
+    $this->assertDatabaseHas('users', [
+      'name' => 'Ender Galban',
+      'email' => 'endergalban@gmail.com',
+    ]);
+    $this->assertDatabaseHas('user_profiles', [
+      'bio' => 'Programador Laravel',
+      'twitter' => null,
+      'user_id' => User::first()->id,
     ]);
   }
   /** @test **/
   function requerir_usuario_name()
   {
-    $this->from(route('users.create'))->post('users', [
+    $this->from(route('users.create'))->post('users', $this->getValidData([
       'name' => '',
-      'email' => 'endergalban@gmail.com',
-      'password' => '123456',
-      'password_confirmation' => '123456',
-    ])->assertRedirect(route('users.create'))
+    ]))->assertRedirect(route('users.create'))
       ->assertSessionHasErrors(['name']);
     $this->assertDatabaseMissing('users', [
         'email' => 'endergalban@gmail.com',
@@ -83,63 +101,50 @@ class UsuariosTest extends TestCase
   /** @test **/
   function requerir_usuario_email()
   {
-      $this->from(route('users.create'))->post('users', [
-        'name' => 'Ender Galban',
-        'email' => '',
-        'password' => '123456',
-        'password_confirmation' => '123456',
-      ])->assertRedirect(route('users.create'))
-        ->assertSessionHasErrors(['email']);
-      $this->assertEquals(0, User::count());
+    $this->from(route('users.create'))->post('users', $this->getValidData([
+      'email' => '',
+    ]))->assertRedirect(route('users.create'))
+      ->assertSessionHasErrors(['email']);
+    $this->assertEquals(0, User::count());
   }
   /** @test **/
   function requerir_usuario_email_valido()
   {
-      $this->from(route('users.create'))->post('users', [
-        'name' => 'Ender Galban',
-        'email' => 'sdfsdfsfs',
-        'password' => '123456',
-        'password_confirmation' => '123456',
-      ])->assertRedirect(route('users.create'))
-        ->assertSessionHasErrors(['email']);
-      $this->assertEquals(0, User::count());
+    $this->from(route('users.create'))->post('users', $this->getValidData([
+      'email' => 'rewwr',
+    ]))->assertRedirect(route('users.create'))
+      ->assertSessionHasErrors(['email']);
+    $this->assertEquals(0, User::count());
   }
   /** @test **/
   function requerir_usuario_email_unico()
   {
     // $this->withoutExceptionHandling();
-      factory(User::class)->create([
-        'email' => 'endergalban@gmail.com'
-      ]);
-      $this->from(route('users.create'))->post('users', [
-        'name' => 'Ender Galban',
-        'email' => 'endergalban@gmail.com',
-        'password' => '123456',
-        'password_confirmation' => '123456',
-      ])->assertRedirect(route('users.create'))
-        ->assertSessionHasErrors(['email']);
-      $this->assertEquals(1, User::count());
+    factory(User::class)->create([
+      'email' => 'endergalban@gmail.com'
+    ]);
+    $this->from(route('users.create'))->post('users', $this->getValidData([
+      'email' => 'endergalban@gmail.com',
+    ]))->assertRedirect(route('users.create'))
+      ->assertSessionHasErrors(['email']);
+    $this->assertEquals(1, User::count());
   }
   /** @test **/
   function requerir_usuario_password()
   {
-    $this->from(route('users.create'))->post('users', [
-      'name' => 'Ender Galban',
-      'email' => 'endergalban@gmail.com',
-      'password' => '',
-    ])->assertRedirect(route('users.create'))
+    $this->from(route('users.create'))->post('users', $this->getValidData([
+      'password' => 'endergalban@gmail.com',
+    ]))->assertRedirect(route('users.create'))
       ->assertSessionHasErrors(['password']);
     $this->assertEquals(0, User::count());
   }
   /** @test **/
   function requerir_usuario_password_confirmacion()
   {
-    $this->from(route('users.create'))->post('users', [
-      'name' => 'Ender Galban',
-      'email' => 'endergalban@gmail.com',
+    $this->from(route('users.create'))->post('users', $this->getValidData([
       'password' => '423342',
       'password_confirmation' => '123456',
-    ])->assertRedirect(route('users.create'))
+    ]))->assertRedirect(route('users.create'))
       ->assertSessionHasErrors(['password']);
     $this->assertEquals(0, User::count());
   }
@@ -231,6 +236,18 @@ class UsuariosTest extends TestCase
     $this->assertDatabaseMissing('users', [
       'id' => $user->id
     ]);
+  }
+
+  private function getValidData(array $custom = [])
+  {
+    return array_filter(array_merge([
+      'name' => 'Ender Galban',
+      'email' => 'endergalban@gmail.com',
+      'password' => '123456',
+      'password_confirmation' => '123456',
+      'bio' => 'Programador Laravel',
+      'twitter' => 'https:twitter.com/endergalban',
+    ], $custom));
   }
 
 }
