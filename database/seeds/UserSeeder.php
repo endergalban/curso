@@ -15,13 +15,22 @@ class UserSeeder extends Seeder
     {
         $profession = Profession::get()->random();
 
-        factory(User::class)->create([
+        $user = factory(User::class)->create([
             'name' => 'Ender Galban',
             'email' => 'endergalban@gmail.com',
-            'password' => bcrypt(123456),
-            'profession_id' =>  $profession->id
+            'role' => 'admin',
+            'password' => '$2y$10$qMvo/bCdk6Rc7mguZkKkRO6zz4xulBZwh8GgK8xEFRCLYy6ahcGjK',
         ]);
 
-        factory(User::class, 50)->create();
+        $user->profile()->create([
+          'profession_id' => $profession->id,
+          'bio' => 'fsfsf',
+        ]);
+
+        factory(User::class, 5)->create()->each(function ($user){
+          $user->profile()->create(
+            factory(\App\Models\UserProfile::class)->raw()
+          );
+        });
     }
 }

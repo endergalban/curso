@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Skill;
+use App\Models\Profession;
 use App\Models\UserProfile;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUser;
 
 class UserController extends Controller
 {
@@ -23,7 +26,9 @@ class UserController extends Controller
 
   public function create()
   {
-    return view('users.create');
+    $user = new User;
+
+    return view('users.create')->with(compact('user'));
   }
 
   public function store(CreateUserRequest $request)
@@ -38,14 +43,9 @@ class UserController extends Controller
     return view('users.edit', compact('user'));
   }
 
-  public function update(User $user)
+  public function update(UpdateUser $request)
   {
-    request()->validate([
-      'name' => 'required',
-      'email' => 'required|email|unique:users,email,'.$user->id,
-    ]);
-    $user->fill(request()->all());
-    $user->save();
+    $user = $request->updateUser();
 
     return redirect()->route('users.show', $user);
   }

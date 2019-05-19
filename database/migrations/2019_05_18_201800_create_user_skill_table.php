@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserProfilesTable extends Migration
+class CreateUserSkillTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateUserProfilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_profiles', function (Blueprint $table) {
+        Schema::create('user_skill', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->string('bio', 1000);
-            $table->string('twitter')->nullable();
-            $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedInteger('profession_id')->nullable();
-            $table->foreign('profession_id')->references('id')->on('professions');
+            $table->unsignedBigInteger('skill_id');
+            $table->foreign('skill_id')->references('id')->on('skills');
+            $table->timestamps();
         });
     }
 
@@ -32,6 +30,6 @@ class CreateUserProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_profiles');
+        Schema::dropIfExists('user_skill');
     }
 }

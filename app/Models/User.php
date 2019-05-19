@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'profession_id'
+        'name', 'email', 'password', 'role'
     ];
 
     /**
@@ -37,17 +37,21 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'is_admin' => 'boolean',
     ];
-
-    public function profession()
-    {
-        return $this->belongsTo(Profession::class);
-    }
 
     public function profile()
     {
-        return $this->hasOne(UserProfile::class);
+        return $this->hasOne(UserProfile::class)->withDefault();
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'user_skill');
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 
 }
