@@ -19,7 +19,6 @@ class CreateUserTest extends DuskTestCase
     public function test_usuario_puede_ser_creado()
     {
         $profession = factory(Profession::class)->create();
-
         $this->browse(function (Browser $browser) use ($profession) {
             $browser->visit('users/create')
                 ->type('name', 'Ender Galban')
@@ -27,7 +26,7 @@ class CreateUserTest extends DuskTestCase
                 ->type('password', '123456')
                 ->type('password_confirmation', '123456')
                 ->select('profession_id', $profession->id)
-                ->type('twitter', 'https/twitter/endergalban')
+                ->type('twitter', 'https://twitter/endergalban')
                 ->type('bio', 'bio')
                 ->press('REGISTRAR')
                 ->assertPathIs('/users')
@@ -37,7 +36,7 @@ class CreateUserTest extends DuskTestCase
 
         $user = User::where('email', 'endergalban@gmail.com')->first();
         $this->assertDatabaseHas('user_profiles', [
-          'twitter' => 'https/twitter/endergalban',
+          'twitter' => 'https://twitter/endergalban',
           'bio' => 'bio',
           'profession_id' => $profession->id,
           'user_id' => $user->id,

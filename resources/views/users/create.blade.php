@@ -9,7 +9,7 @@
   @endslot
   @slot('body')
     <form class="col s4" action="{{ route('users.store') }}" method="post">
-      @include('users._fields')
+      @render('UserFields', ['user' => $user])
       <div class="row">
         <div class="input-field col s12">
           <i class="material-icons prefix">lock_open</i>
@@ -27,7 +27,6 @@
           <label for="password_confirmation">Confirmar Password</label>
         </div>
       </div>
-
       <div class="row">
         <div class="input-field col s12">
           <a class="waves-effect waves-light btn blue-grey lighten-5  black-text" href="{{ route('users.index')}}">Volver</a>

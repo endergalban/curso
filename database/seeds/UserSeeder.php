@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $profession = Profession::get()->random();
+        $professions = Profession::all();
 
         $user = factory(User::class)->create([
             'name' => 'Ender Galban',
@@ -23,14 +23,15 @@ class UserSeeder extends Seeder
         ]);
 
         $user->profile()->create([
-          'profession_id' => $profession->id,
+          'profession_id' => $professions->firstWhere('title', 'BackEnd Developer')->id,
           'bio' => 'fsfsf',
         ]);
 
-        factory(User::class, 5)->create()->each(function ($user){
-          $user->profile()->create(
-            factory(\App\Models\UserProfile::class)->raw()
-          );
+        factory(User::class, 20)->create()->each(function ($user) use ($professions) {
+          $user->profile()->create([
+            'profession_id' => rand(0, 2) ? $professions->random()->id : null,
+            'bio' => ''
+          ]);
         });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Sortable;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -24,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+      $this->app->bind(Sortable::class, function ($app) {
+        return new Sortable(request()->url());
+      });
     }
 }

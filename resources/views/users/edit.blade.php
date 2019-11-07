@@ -13,7 +13,7 @@
       <form class="col s4" action="{{ route('users.update', $user) }}" method="post">
         {{ method_field('PUT') }}
         <input type="hidden" name="user_id" value="{{ $user->id }}">
-        @include('users._fields')
+        @render('UserFields', ['user' => $user])
         <div class="row">
           <div class="input-field col s12">
             <a class="waves-effect waves-light btn blue-grey lighten-5  black-text" href="{{ route('users.index')}}">Volver</a>
